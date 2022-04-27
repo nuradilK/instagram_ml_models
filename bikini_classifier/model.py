@@ -1,4 +1,3 @@
-import torch
 import torch.nn as nn
 import torchvision
 
@@ -6,12 +5,13 @@ import torchvision
 class MobileNetClf(nn.Module):
     def __init__(self):
         super().__init__()
-        self.model = torchvision.models.mobilenet_v3_large(pretrained=True)
-        self.lm_head = nn.Linear(1000, 1)
+        self.base = torchvision.models.mobilenet_v3_large(pretrained=True)
+        # self.base = torchvision.models.resnet18(pretrained=True)
+        self.fc = nn.Linear(1000, 1)
         self.activation = nn.Sigmoid()
 
     def forward(self, x):
-        logits = self.model(x)
-        logits = self.lm_head(logits)
+        logits = self.base(x)
+        logits = self.fc(logits)
         probs = self.activation(logits)
         return probs.squeeze()

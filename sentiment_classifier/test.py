@@ -50,7 +50,7 @@ def preds(model, test_loader):
         with torch.no_grad():
             outputs = model(inputs)
             outputs = torch.sigmoid(outputs)
-            predictions.append(outputs.cpu().detach().numpy().tolist())
+            predictions += outputs.tolist()
     return predictions
 
 
@@ -74,11 +74,11 @@ def main():
     # predictions = preds(model=model, test_loader=prediction_dataloader)
     # predictions = np.array(predictions)[:,0]
 
-    test = pd.read_csv('./data/test.csv')
+    test = pd.read_csv('../data/test.csv')
     x_test = test['comment_text']
 
     test_dataset = text_dataset(x_test)
-    prediction_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=1, shuffle=False)
+    prediction_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
 
     predictions = preds(model=model, test_loader=prediction_dataloader)
     predictions = np.array(predictions)[:,0]
